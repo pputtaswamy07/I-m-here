@@ -6,7 +6,7 @@ const token = req.headers.authorization || "";
 if(!token) return null;
 
 try{
-    return jwt.verify(tooken, process.env.JWT_SECRET);
+    return jwt.verify(token, process.env.JWT_SECRET);
 }catch(err){
     return null;
 }

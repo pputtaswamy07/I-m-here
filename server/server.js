@@ -29,7 +29,6 @@ await server.start();
 
 app.use(
     "/graphql",
-    express.json(), 
     expressMiddleware(server, {
       context: async ({ req }) => {
         const user = getUserFromToken(req);
