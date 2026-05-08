@@ -1,14 +1,7 @@
-import HelpersList from "./components/HelpersList";
+import Home from "./pages/Home";
 
 function App() {
-  return (
-    <div>
-      <h1>I'm Here App</h1>
-      <button>I'm here today ❤️</button>
-
-      <HelpersList />
-    </div>
-  );
+  return <Home />;
 }
 
 export default App;
