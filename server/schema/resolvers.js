@@ -16,27 +16,72 @@ const resolvers = {
   },
 
   Mutation: {
-    register: async (_, { name, email, password, phone }) => {
-      const hashed = await bcrypt.hash(password, 10);
+    register: async (_, args) => {
 
+      const {
+        name,
+        email,
+        password,
+        phone,
+        location
+      } = args;
+    
+      // check existing user
+      const existingUser = await User.findOne({ email });
+    
+      if (existingUser) {
+        throw new Error("User already exists");
+      }
+    
+      // hash password
+      const hashedPassword = await bcrypt.hash(password, 10);
+    
+      // create user
       const user = await User.create({
         name,
         email,
-        password: hashed,
-        phone
+        password: hashedPassword,
+        phone,
+        location
       });
-
-      return jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+    
+      // create token
+      const token = jwt.sign(
+        { id: user._id },
+        process.env.JWT_SECRET,
+        { expiresIn: "7d" }
+      );
+    
+      return token;
     },
 
     login: async (_, { email, password }) => {
+
+      // find user
       const user = await User.findOne({ email });
-      if (!user) throw new Error("User not found");
-
-      const valid = await bcrypt.compare(password, user.password);
-      if (!valid) throw new Error("Wrong password");
-
-      return jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+    
+      if (!user) {
+        throw new Error("User not found");
+      }
+    
+      // compare password
+      const validPassword = await bcrypt.compare(
+        password,
+        user.password
+      );
+    
+      if (!validPassword) {
+        throw new Error("Invalid password");
+      }
+    
+      // create JWT token
+      const token = jwt.sign(
+        { id: user._id },
+        process.env.JWT_SECRET,
+        { expiresIn: "7d" }
+      );
+    
+      return token;
     },
 
     markAvailable: async (_, { tasks, location }, { user }) => {

@@ -22,7 +22,14 @@ type Query {
 }
 
 type Mutation {
-register(name: String!, email: String!, password: String!,  phone: String!): String
+register(
+  name: String!
+  email: String!
+  password: String!
+  phone: String!
+  location: String
+): String
+
 login(email: String!, password: String!): String
 
 markAvailable(tasks: [String], location: String): Availability
