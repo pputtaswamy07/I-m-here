@@ -31,3 +31,18 @@ export const LOGIN_USER = gql`
     )
   }
 `;
+
+export const MARK_AVAILABLE = gql`
+  mutation MarkAvailable(
+    $tasks: [String]
+    $location: String
+  ) {
+
+    markAvailable(
+      tasks: $tasks
+      location: $location
+    ) {
+      id
+    }
+  }
+`;

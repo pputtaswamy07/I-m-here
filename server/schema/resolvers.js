@@ -51,7 +51,6 @@ const resolvers = {
         process.env.JWT_SECRET,
         { expiresIn: "7d" }
       );
-    
       return token;
     },
 
@@ -59,7 +58,6 @@ const resolvers = {
 
       // find user
       const user = await User.findOne({ email });
-    
       if (!user) {
         throw new Error("User not found");
       }
@@ -84,31 +82,27 @@ const resolvers = {
       return token;
     },
 
-    markAvailable: async (_, { tasks, location }, { user }) => {
-      let currentUser = user;
-    
-      //  if no auth, pick a test user(temproary fix)
-      if (!currentUser) {
-        const users = await User.find();
-        if (!users.length) throw new Error("No users found");
-        currentUser = { id: users[0]._id };
-      }
-    
-      return await Availability.create({
-        user: currentUser.id,
-        tasks,
-        location
-      });
-    },
+   markAvailable: async (_, { tasks, location }, { user }) => {
+  // user must be logged in
+  if (!user) {
+    throw new Error("Not authenticated");
+  }
+  return await Availability.create({
+    user: user.id,
+    tasks,
+    location
+  });
+},
 
     markUnavailable: async (_, __, { user }) => {
+       console.log(user);
+       
       if (!user) throw new Error("Not authenticated");
 
       await Availability.updateMany(
         { user: user.id },
         { isActive: false }
       );
-
       return true;
     }
   }
