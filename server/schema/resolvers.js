@@ -23,7 +23,8 @@ const resolvers = {
         email,
         password,
         phone,
-        location
+        location,
+        role
       } = args;
     
       // check existing user
@@ -42,7 +43,8 @@ const resolvers = {
         email,
         password: hashedPassword,
         phone,
-        location
+        location,
+        role
       });
     
       // create token

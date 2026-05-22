@@ -11,7 +11,8 @@ function Join() {
     email: "",
     password: "",
     phone: "",
-    location: ""
+    location: "",
+    role: "volunteer"
   });
 
   const [registerUser] = useMutation(REGISTER_USER);
@@ -38,7 +39,7 @@ function Join() {
 
       localStorage.setItem("token", data.register);
       alert("Registration successful");
-      navigate("/");
+      navigate("/dashboard");
     } catch (error) {
       console.log(error);
       setError(error.message || "Registration failed. Please try again.");
@@ -52,7 +53,7 @@ function Join() {
       <div className="auth-container">
         <form onSubmit={handleSubmit} className="auth-form">
           <div className="form-header">
-            <h2>Become a Volunteer</h2>
+            <h2>Join I'm here</h2>
             <p>Join our community and help your neighbors</p>
           </div>
 
@@ -68,6 +69,27 @@ function Join() {
               required
             />
           </div>
+
+              <div className="form-group">
+
+            <select
+              name="role"
+              value={formData.role}
+              onChange={handleChange}
+            >
+
+              <option value="VOLUNTEER">
+                Volunteer
+              </option>
+
+              <option value="SEEKER">
+                Seeker
+              </option>
+
+            </select>
+
+          </div>
+
 
           <div className="form-group">
             <input

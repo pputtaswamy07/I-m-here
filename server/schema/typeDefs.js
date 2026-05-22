@@ -5,6 +5,8 @@ type User {
     name: String!
     email: String!
     phone: String!
+    location: String
+    role: String!
 }
 
 type Availability {
@@ -28,6 +30,7 @@ register(
   password: String!
   phone: String!
   location: String
+  role: String!
 ): String
 
 login(email: String!, password: String!): String

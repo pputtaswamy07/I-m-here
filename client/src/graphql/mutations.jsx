@@ -7,6 +7,7 @@ export const REGISTER_USER = gql`
     $password: String!
     $phone: String!
     $location: String
+    $role: String!
   ) {
 
     register(
@@ -15,6 +16,7 @@ export const REGISTER_USER = gql`
       password: $password
       phone: $phone
       location: $location
+      role: $role
     )
   }
 `;

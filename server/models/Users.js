@@ -23,7 +23,10 @@ const userSchema = new mongoose.Schema({
     required: true
   },
 
-  location: String,
+  location: {
+    type: String,
+    required: true
+  },
 
   role: {
     type: String,

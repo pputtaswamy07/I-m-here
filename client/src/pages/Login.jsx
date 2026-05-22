@@ -28,7 +28,7 @@ function Login() {
       // store token
       localStorage.setItem("token", data.login)
       alert("Login successful");
-      navigate("/");
+      navigate("/dashboard");
     } catch (error) {
       console.log(error);
       alert(error.message);

@@ -13,3 +13,18 @@ export const GET_AVAILABILITY = gql`
     }
   }
 `;
+
+// GET CURRENT LOGGED-IN USER
+export const GET_ME = gql`
+
+  query {
+
+    me {
+      id
+      name
+      email
+      role
+      location
+    }
+  }
+`;
