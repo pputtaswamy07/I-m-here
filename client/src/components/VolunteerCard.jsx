@@ -8,7 +8,6 @@ function VolunteerCard({ volunteer }) {
 
       <div className="volunteer-info">
         <h3 className="volunteer-name">{volunteer.user.name}</h3>
-
         <p className="volunteer-phone">{volunteer.user.phone}</p>
 
         <div className="volunteer-services-section">

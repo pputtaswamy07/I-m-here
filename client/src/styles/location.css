@@ -1,0 +1,57 @@
+.location-wrapper {
+
+  position: relative;
+
+  width: 100%;
+}
+
+
+.location-wrapper input {
+
+  width: 100%;
+
+  padding: 14px;
+
+  border-radius: 12px;
+
+  border: 1px solid #ddd;
+
+  font-size: 16px;
+}
+
+
+.location-dropdown {
+
+  position: absolute;
+
+  width: 100%;
+
+  background: white;
+
+  border-radius: 12px;
+
+  margin-top: 6px;
+
+  overflow: hidden;
+
+  box-shadow:
+    0 8px 24px rgba(0,0,0,0.1);
+
+  z-index: 999;
+}
+
+
+.location-item {
+
+  padding: 12px;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+
+.location-item:hover {
+
+  background: #f5f5f5;
+}

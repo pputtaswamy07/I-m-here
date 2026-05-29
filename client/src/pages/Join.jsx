@@ -3,6 +3,8 @@ import { useMutation } from "@apollo/client/react";
 import { useNavigate } from "react-router-dom";
 import { REGISTER_USER } from "../graphql/mutations";
 import "../styles/join.css";
+import LocationAutocomplete from "../components/LocationAutocomplete";
+import "../styles/location.css";
 
 function Join() {
   const navigate = useNavigate();
@@ -70,10 +72,10 @@ function Join() {
             />
           </div>
 
-              <div className="form-group">
-
-            <select
+          <div className="form-group">
+            <select  
               name="role"
+               
               value={formData.role}
               onChange={handleChange}
             >
@@ -81,15 +83,11 @@ function Join() {
               <option value="VOLUNTEER">
                 Volunteer
               </option>
-
               <option value="SEEKER">
                 Seeker
               </option>
-
             </select>
-
           </div>
-
 
           <div className="form-group">
             <input
@@ -125,13 +123,19 @@ function Join() {
           </div>
 
           <div className="form-group">
-            <input
-              type="text"
-              name="location"
-              placeholder="Your Location"
-              value={formData.location}
-              onChange={handleChange}
-            />
+           <LocationAutocomplete
+       value={formData.location}
+
+  onChange={(location) =>
+
+    setFormData({
+
+      ...formData,
+
+      location
+    })
+  }
+/>
           </div>
 
           <button 

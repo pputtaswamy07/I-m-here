@@ -78,14 +78,30 @@
     font-family: inherit;
     box-sizing: border-box;
   }
-  
-  .auth-form input:focus {
-    outline: none;
-    border-color: #0066cc;
-    box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
-    background-color: #f9fbff;
-  }
-  
+
+.auth-form select {
+  width: 100%;
+  padding: 0.9rem 1.2rem;
+  font-size: 1rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  font-family: inherit;
+  box-sizing: border-box;
+  color: #999;
+}
+
+ .auth-form select:focus {
+  outline: none;
+  border-color: #0066cc;
+  box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+  background-color: #f9fbff;
+}
+
+.auth-form input::placeholder {
+  color: #999;
+}
+
   .auth-form input::placeholder {
     color: #999;
   }
