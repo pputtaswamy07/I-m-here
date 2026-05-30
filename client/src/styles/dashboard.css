@@ -282,8 +282,8 @@
 
 /* Custom Checkbox Styling */
 .task-options input[type="checkbox"] {
-  appearance: none;
-  -webkit-appearance: none;
+  appearance: auto;
+  -webkit-appearance: auto;
   width: 20px;
   height: 20px;
   border: 2px solid #d0d0d0;
