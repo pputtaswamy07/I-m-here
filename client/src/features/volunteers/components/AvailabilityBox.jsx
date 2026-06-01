@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useMutation } from "@apollo/client/react";
-import { MARK_AVAILABLE } from "../graphql/mutations";
-import "../styles/dashboard.css";
+import { MARK_AVAILABLE } from "../../auth/graphql/mutations";
+import "../../dashboard/styles/dashboard.css";
 
 function AvailabilityBox() {
   const [location, setLocation] = useState("");

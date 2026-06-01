@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client/react";
-import { GET_AVAILABILITY } from "../graphql/queries";
+import { GET_AVAILABILITY } from "../../auth/graphql/queries";
 import VolunteerCard from "./VolunteerCard";
 
 

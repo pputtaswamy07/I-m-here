@@ -3,8 +3,8 @@ import { useMutation } from "@apollo/client/react";
 import { useNavigate } from "react-router-dom";
 import { REGISTER_USER } from "../graphql/mutations";
 import "../styles/join.css";
-import LocationAutocomplete from "../../../components/LocationAutocomplete";
-import "../styles/location.css";
+import LocationAutocomplete from "../../location/components/LocationAutocomplete";
+import "../../location/styles/location.css";
 
 function Join() {
   const navigate = useNavigate();

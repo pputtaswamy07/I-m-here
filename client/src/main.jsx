@@ -6,14 +6,14 @@ import {
   HttpLink
 } from "@apollo/client";
 import{ApolloProvider} from "@apollo/client/react"
-import { SetContextLink } from "@apollo/client/link/context";
+import { setContext } from "@apollo/client/link/context";
 import App from "./App";
 
 const httpLink = new HttpLink({
   uri: "http://localhost:4000/graphql"
 });
 
-const authLink = new SetContextLink((_, { headers }) => {
+const authLink = setContext((_, { headers }) => {
 
   const token = localStorage.getItem("token");
 
