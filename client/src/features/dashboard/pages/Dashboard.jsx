@@ -3,6 +3,7 @@ import { GET_ME } from "../../auth/graphql/queries";
 import { useNavigate } from "react-router-dom";
 import AvailabilityBox from "../../volunteers/components/AvailabilityBox";
 import VolunteersList from "../../volunteers/components/VolunteersList";
+import ProfileMenu from "../../../shared/components/ProfileMenu";
 import "../styles/dashboard.css";
 
 
@@ -22,12 +23,10 @@ function Dashboard() {
       <header className="dashboard-nav">
         <div className="nav-content">
           <div className="nav-left">
-            <h3>I'm here</h3>
+            <h3 className="nav-brand" onClick={() => navigate("/")}>I'm here</h3>
           </div>
           <div className="nav-right">
-            <button className="nav-link" onClick={() => navigate("/profile")}>Profile</button>
-            <button className="nav-link" onClick={() => navigate("/settings")}>Settings</button>
-            <button className="nav-link logout" onClick={() => { localStorage.clear(); navigate("/login"); }}>Logout</button>
+            <ProfileMenu />
           </div>
         </div>
       </header>
@@ -39,25 +38,13 @@ function Dashboard() {
         </div>
 
         <div className="dashboard-content">
-          {user.role === "VOLUNTEER" && (
+          {user.role?.toUpperCase() === "VOLUNTEER" && (
             <section className="dashboard-section volunteer-section">
               <AvailabilityBox />
-              <div className="quick-actions">
-                <button className="action-card" onClick={() => navigate("/my-requests")}>
-                  <span className="action-icon">📋</span>
-                  <h3>View Requests</h3>
-                  <p>See help requests from your area</p>
-                </button>
-                <button className="action-card" onClick={() => navigate("/my-activities")}>
-                  <span className="action-icon">✅</span>
-                  <h3>My Activities</h3>
-                  <p>Track your volunteering history</p>
-                </button>
-              </div>
             </section>
           )}
 
-          {user.role === "SEEKER" && (
+          {user.role?.toUpperCase() === "SEEKER" && (
             <section className="dashboard-section seeker-section">
               <div className="section-header">
                 <h2>Available Volunteers Near You</h2>

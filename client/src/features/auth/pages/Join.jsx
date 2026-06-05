@@ -14,7 +14,7 @@ function Join() {
     password: "",
     phone: "",
     location: "",
-    role: "volunteer"
+    role: "VOLUNTEER"
   });
 
   const [registerUser] = useMutation(REGISTER_USER);

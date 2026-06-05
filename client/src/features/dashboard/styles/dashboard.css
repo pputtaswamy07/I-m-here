@@ -1,4 +1,44 @@
-/* Dashboard Container */
+/* ── Navbar ─────────────────────────────────────────────── */
+.dashboard-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: #ffffff;
+  border-bottom: 1px solid #e8e8e8;
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.06);
+}
+
+.nav-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav-brand {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #115be4;
+  margin: 0;
+  cursor: pointer;
+  letter-spacing: -0.5px;
+  transition: opacity 0.2s;
+}
+
+.nav-brand:hover {
+  opacity: 0.75;
+}
+
+/* ── Profile Avatar + Dropdown ──────────────────────────── */
+.nav-right {
+  display: flex;
+  align-items: center;
+}
+
+/* ── Dashboard Container ─────────────────────────────────── */
 .dashboard-container {
   min-height: 100vh;
   background: linear-gradient(135deg, #f9f7f4 0%, #f5f1ed 100%);
