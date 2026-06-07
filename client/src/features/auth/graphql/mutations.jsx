@@ -38,11 +38,15 @@ export const MARK_AVAILABLE = gql`
   mutation MarkAvailable(
     $tasks: [String]
     $location: String
+    $phone: String
+    $email: String
   ) {
 
     markAvailable(
       tasks: $tasks
       location: $location
+      phone: $phone
+      email: $email
     ) {
       id
     }

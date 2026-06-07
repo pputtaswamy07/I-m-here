@@ -7,6 +7,7 @@ import {
 } from "@apollo/client";
 import{ApolloProvider} from "@apollo/client/react"
 import { setContext } from "@apollo/client/link/context";
+import "./index.css";
 import App from "./App";
 
 const httpLink = new HttpLink({

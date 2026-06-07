@@ -1,27 +1,36 @@
+import { useNavigate } from "react-router-dom";
 import "../styles/hero.css";
 import hero from "../../../assets/hero.png";
+import WhyWeCare from "./WhyWeCare";
+import FollowJourney from "./FollowJourney";
 
 function Hero() {
+  const navigate = useNavigate();
 
- 
   return (
-    <section className="hero">
-      <img src={hero} alt="hero" className="hero-image" />
+    <main className="home-main">
 
-      <div className="hero-overlay">
-        <div className="hero-content">
-          <h1>
-            Neighborly Help,
-            <br />
-            Right Here.
-          </h1>
-          <p>
-            Connect with local volunteers ready to help
-            with groceries, medicine, or simply a chat.
+      {/* ── Hero Section ── */}
+      <section className="hero-section">
+        <div className="hero-text">
+          <h1 className="hero-heading">volunteer your time</h1>
+          <p className="hero-sub">
+            support local seniors<br />
+            with everyday tasks and companionship.
           </p>
+          <button className="pill-btn" onClick={() => navigate("/join")}>
+            Get Started
+          </button>
         </div>
-      </div>
-    </section>
+        <div className="hero-image-wrap">
+          <img src={hero} alt="volunteer helping senior" className="hero-photo" />
+        </div>
+      </section>
+
+      <WhyWeCare />
+      <FollowJourney />
+
+    </main>
   );
 }
 

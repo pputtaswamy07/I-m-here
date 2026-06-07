@@ -1,0 +1,135 @@
+.follow-section {
+  height: 100vh;
+  scroll-snap-align: start;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #CE8946;
+  border-top: 2px solid #b87535;
+
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease-out 0.1s, transform 0.6s ease-out 0.1s;
+}
+
+.follow-section--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Inner centred block ─────────────────────────────────── */
+.follow-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 80px 3rem 3rem;
+  max-width: 640px;
+}
+
+/* Small caps label above heading */
+.follow-eyebrow {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #FDFBD4;
+  opacity: 0.75;
+  margin: 0 0 1rem 0;
+}
+
+.follow-heading {
+  font-family: var(--font-heading);
+  font-size: 3.5rem;
+  font-weight: 400;
+  letter-spacing: -1px;
+  color: #FDFBD4;
+  line-height: 1.1;
+  margin: 0 0 1.4rem 0;
+}
+
+.follow-sub {
+  font-family: var(--font-body);
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: rgba(253, 251, 212, 0.85);
+  margin: 0 0 3rem 0;
+}
+
+/* ── Social icons row ────────────────────────────────────── */
+.follow-socials {
+  display: flex;
+  gap: 1.2rem;
+  margin: 0 0 2.5rem 0;
+}
+
+.social-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(253, 251, 212, 0.5);
+  color: #FDFBD4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: background 0.2s, border-color 0.2s, transform 0.2s;
+  flex-shrink: 0;
+}
+
+.social-icon svg {
+  width: 22px;
+  height: 22px;
+}
+
+.social-icon:hover {
+  background: rgba(253, 251, 212, 0.15);
+  border-color: #FDFBD4;
+  transform: translateY(-3px);
+}
+
+/* ── Closing tagline ─────────────────────────────────────── */
+.follow-tagline {
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  font-style: italic;
+  color: rgba(253, 251, 212, 0.7);
+  margin: 0;
+}
+
+/* ── Responsive ─────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .follow-heading {
+    font-size: 2.6rem;
+  }
+
+  .follow-sub {
+    font-size: 1rem;
+  }
+
+  .social-icon {
+    width: 46px;
+    height: 46px;
+  }
+
+  .social-icon svg {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .follow-inner {
+    padding: 80px 1.5rem 2rem;
+  }
+
+  .follow-heading {
+    font-size: 2rem;
+  }
+
+  .follow-socials {
+    gap: 0.9rem;
+  }
+}

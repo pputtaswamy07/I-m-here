@@ -1,28 +1,34 @@
 import { useState } from "react";
 import { useMutation } from "@apollo/client/react";
 import { MARK_AVAILABLE } from "../../auth/graphql/mutations";
+import LocationAutocomplete from "../../location/components/LocationAutocomplete";
+import _PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
+// Vite CJS→ESM interop: the default export may be wrapped in { default: Component }
+const PhoneInput = _PhoneInput.default ?? _PhoneInput;
+import "../../location/styles/location.css";
 import "../../dashboard/styles/dashboard.css";
+
+const taskOptions = [
+  "Groceries",
+  "Medicine Pickup",
+  "Transportation",
+  "Companion Visit",
+];
 
 function AvailabilityBox() {
   const [location, setLocation] = useState("");
-  const [tasks, setTasks] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [phone, setPhone]       = useState("");
+  const [email, setEmail]       = useState("");
+  const [tasks, setTasks]       = useState([]);
+  const [loading, setLoading]   = useState(false);
 
   const [markAvailable] = useMutation(MARK_AVAILABLE);
 
-  const taskOptions = [
-    "Groceries",
-    "Medicine Pickup",
-    "Transportation",
-    "Companion Visit"
-  ];
-
   const handleTaskChange = (task) => {
-    if (tasks.includes(task)) {
-      setTasks(tasks.filter((t) => t !== task));
-    } else {
-      setTasks([...tasks, task]);
-    }
+    setTasks((prev) =>
+      prev.includes(task) ? prev.filter((t) => t !== task) : [...prev, task]
+    );
   };
 
   const handleAvailability = async () => {
@@ -30,27 +36,27 @@ function AvailabilityBox() {
       alert("Please enter your location");
       return;
     }
-
     if (tasks.length === 0) {
       alert("Please select at least one service");
       return;
     }
 
     setLoading(true);
-
     try {
       await markAvailable({
         variables: {
           tasks,
-          location
+          location,
+          phone: phone ? `+${phone}` : undefined,
+          email: email.trim() || undefined,
         },
-        refetchQueries: ["GetAvailabilities"]
+        refetchQueries: ["GetAvailabilities"],
       });
 
       alert("You are now available ❤️");
-      
-      // Reset form
       setLocation("");
+      setPhone("");
+      setEmail("");
       setTasks([]);
 
     } catch (error) {
@@ -64,13 +70,44 @@ function AvailabilityBox() {
     <div className="availability-box">
       <h2>What can you help with today?</h2>
 
-      <input
-        type="text"
-        placeholder="Your location"
-        value={location}
-        onChange={(e) => setLocation(e.target.value)}
-      />
+      {/* Location — autocomplete API */}
+      <div className="avail-field-group">
+        <label className="avail-label">Your location</label>
+        <LocationAutocomplete
+          value={location}
+          onChange={(val) => setLocation(val)}
+        />
+      </div>
 
+      {/* Phone number — all countries via react-phone-input-2 */}
+      <div className="avail-field-group">
+        <label className="avail-label">Phone number</label>
+        <PhoneInput
+          country="us"
+          value={phone}
+          onChange={(val) => setPhone(val)}
+          enableSearch
+          searchPlaceholder="Search country..."
+          inputClass="rpi-input"
+          containerClass="rpi-container"
+          buttonClass="rpi-button"
+          dropdownClass="rpi-dropdown"
+        />
+      </div>
+
+      {/* Contact email */}
+      <div className="avail-field-group">
+        <label className="avail-label">Contact email</label>
+        <input
+          type="email"
+          className="avail-email-input"
+          placeholder="your@email.com"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+      </div>
+
+      {/* Task checkboxes */}
       <div className="task-options">
         {taskOptions.map((task) => (
           <label key={task}>
@@ -84,10 +121,7 @@ function AvailabilityBox() {
         ))}
       </div>
 
-      <button
-        onClick={handleAvailability}
-        disabled={loading}
-      >
+      <button onClick={handleAvailability} disabled={loading}>
         {loading ? "Setting up..." : "I'm Available ❤️"}
       </button>
     </div>
