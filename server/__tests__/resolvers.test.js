@@ -3,7 +3,10 @@ import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 
 // ── Mock mongoose models so no real DB is needed ────────────
+// __esModule: true tells Babel's _interopRequireDefault to skip the
+// double-wrapping it would otherwise apply to the default export.
 jest.mock('../models/Users.js', () => ({
+  __esModule: true,
   default: {
     findOne: jest.fn(),
     findById: jest.fn(),
@@ -12,10 +15,12 @@ jest.mock('../models/Users.js', () => ({
 }))
 
 jest.mock('../models/Availability.js', () => ({
+  __esModule: true,
   default: {
     find: jest.fn(),
     create: jest.fn(),
     findOne: jest.fn(),
+    updateMany: jest.fn(),
   },
 }))
 
@@ -25,6 +30,20 @@ import Availability from '../models/Availability.js'
 const JWT_SECRET = 'test-secret'
 beforeAll(() => { process.env.JWT_SECRET = JWT_SECRET })
 beforeEach(() => { jest.clearAllMocks() })
+
+// ── Query: availabilities ────────────────────────────────────
+describe('Query.availabilities', () => {
+  it('returns active availabilities with user populated', async () => {
+    const fakeList = [{ id: 'a1', isActive: true }]
+    const populateMock = jest.fn().mockResolvedValue(fakeList)
+    Availability.find.mockReturnValue({ populate: populateMock })
+
+    const result = await resolvers.Query.availabilities()
+    expect(Availability.find).toHaveBeenCalledWith({ isActive: true })
+    expect(populateMock).toHaveBeenCalledWith('user')
+    expect(result).toEqual(fakeList)
+  })
+})
 
 // ── Query: me ────────────────────────────────────────────────
 describe('Query.me', () => {
@@ -111,5 +130,44 @@ describe('Mutation.login', () => {
     const token = await resolvers.Mutation.login(null, { email: 'a@b.com', password: 'right' })
     const decoded = jwt.verify(token, JWT_SECRET)
     expect(decoded).toMatchObject({ id: 'u2' })
+  })
+})
+
+// ── Mutation: markAvailable ──────────────────────────────────
+describe('Mutation.markAvailable', () => {
+  it('throws when not authenticated', async () => {
+    await expect(
+      resolvers.Mutation.markAvailable(null, { tasks: [], location: 'Berlin' }, { user: null })
+    ).rejects.toThrow('Not authenticated')
+  })
+
+  it('creates an availability record for the logged-in user', async () => {
+    const fakeAvail = { id: 'av1', user: 'u1', tasks: ['errands'], location: 'Berlin' }
+    Availability.create.mockResolvedValue(fakeAvail)
+
+    const result = await resolvers.Mutation.markAvailable(
+      null,
+      { tasks: ['errands'], location: 'Berlin' },
+      { user: { id: 'u1' } }
+    )
+    expect(Availability.create).toHaveBeenCalledWith({ user: 'u1', tasks: ['errands'], location: 'Berlin' })
+    expect(result).toEqual(fakeAvail)
+  })
+})
+
+// ── Mutation: markUnavailable ────────────────────────────────
+describe('Mutation.markUnavailable', () => {
+  it('throws when not authenticated', async () => {
+    await expect(
+      resolvers.Mutation.markUnavailable(null, {}, { user: null })
+    ).rejects.toThrow('Not authenticated')
+  })
+
+  it('marks all user availabilities inactive and returns true', async () => {
+    Availability.updateMany.mockResolvedValue({})
+
+    const result = await resolvers.Mutation.markUnavailable(null, {}, { user: { id: 'u1' } })
+    expect(Availability.updateMany).toHaveBeenCalledWith({ user: 'u1' }, { isActive: false })
+    expect(result).toBe(true)
   })
 })

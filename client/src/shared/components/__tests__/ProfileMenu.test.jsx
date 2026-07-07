@@ -91,6 +91,49 @@ describe('ProfileMenu', () => {
     })
   })
 
+  it('navigates to /dashboard when Dashboard is clicked', () => {
+    renderMenu(true)
+    fireEvent.click(screen.getByRole('button', { name: /open profile menu/i }))
+    fireEvent.click(screen.getByText(/^dashboard$/i))
+    expect(mockNavigate).toHaveBeenCalledWith('/dashboard')
+  })
+
+  it('navigates to /my-activities when My Activities is clicked', () => {
+    renderMenu()
+    fireEvent.click(screen.getByRole('button', { name: /open profile menu/i }))
+    fireEvent.click(screen.getByText(/my activities/i))
+    expect(mockNavigate).toHaveBeenCalledWith('/my-activities')
+  })
+
+  it('navigates to /contact when Contact is clicked', () => {
+    renderMenu()
+    fireEvent.click(screen.getByRole('button', { name: /open profile menu/i }))
+    fireEvent.click(screen.getByText(/^contact$/i))
+    expect(mockNavigate).toHaveBeenCalledWith('/contact')
+  })
+
+  it('keeps dropdown open when clicking inside it', async () => {
+    renderMenu()
+    fireEvent.click(screen.getByRole('button', { name: /open profile menu/i }))
+    expect(screen.getByText(/^requests$/i)).toBeInTheDocument()
+
+    fireEvent.mouseDown(screen.getByText(/^requests$/i))
+    await waitFor(() => {
+      expect(screen.getByText(/^requests$/i)).toBeInTheDocument()
+    })
+  })
+
+  it('defaults showDashboard to false when the prop is omitted', () => {
+    render(<MemoryRouter><ProfileMenu /></MemoryRouter>)
+    fireEvent.click(screen.getByRole('button', { name: /open profile menu/i }))
+    expect(screen.queryByText(/^dashboard$/i)).not.toBeInTheDocument()
+  })
+
+  it('removes the mousedown listener when unmounted', () => {
+    const { unmount } = renderMenu()
+    unmount()
+  })
+
   it('closes the dropdown on outside click', async () => {
     renderMenu()
     fireEvent.click(screen.getByRole('button', { name: /open profile menu/i }))

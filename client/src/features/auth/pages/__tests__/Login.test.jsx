@@ -91,6 +91,25 @@ describe('Login page', () => {
     })
   })
 
+  it('navigates to / when the brand logo is clicked', () => {
+    renderLogin()
+    fireEvent.click(screen.getByText(/i'm here/i))
+    expect(mockNavigate).toHaveBeenCalledWith('/')
+  })
+
+  it('falls back to default message when the error has no .message', async () => {
+    mockMutate.mockRejectedValue({})
+
+    renderLogin()
+    fireEvent.change(screen.getByLabelText(/email/i), { target: { value: 'x@x.com' } })
+    fireEvent.change(screen.getByLabelText(/password/i), { target: { value: 'pass' } })
+    fireEvent.click(screen.getByRole('button', { name: /^login$/i }))
+
+    await waitFor(() => {
+      expect(screen.getByText(/login failed\. please try again/i)).toBeInTheDocument()
+    })
+  })
+
   it('shows "Signing in..." while the mutation is pending', async () => {
     // Never resolves during this test — keeps the button in loading state
     mockMutate.mockImplementation(() => new Promise(() => {}))
