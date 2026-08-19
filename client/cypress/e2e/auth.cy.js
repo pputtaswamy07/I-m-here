@@ -1,3 +1,23 @@
+describe('Protected routes', () => {
+  it('redirects /dashboard to /login when not logged in', () => {
+    cy.logout()
+    cy.visit('/dashboard')
+    cy.url().should('include', '/login')
+  })
+
+  it('redirects /login to /dashboard when already logged in', () => {
+    cy.loginAs('mock-token')
+    cy.visit('/login')
+    cy.url().should('include', '/dashboard')
+  })
+
+  it('redirects /join to /dashboard when already logged in', () => {
+    cy.loginAs('mock-token')
+    cy.visit('/join')
+    cy.url().should('include', '/dashboard')
+  })
+})
+
 describe('Login page', () => {
   beforeEach(() => {
     cy.logout()
