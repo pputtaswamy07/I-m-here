@@ -1,0 +1,70 @@
+/* ── Settings section ─────────────────────────────────────── */
+.settings-section {
+  background: linear-gradient(135deg, #ffffff 0%, #fffef0 100%);
+}
+
+.settings-card {
+  background: #f9f7f4;
+  border: 2px solid #f0e8c0;
+  border-radius: 14px;
+  padding: 1.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-bottom: 1.5rem;
+}
+
+.settings-field {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+  border-bottom: 1px solid #eee8d0;
+}
+
+.settings-field:last-child {
+  border-bottom: none;
+}
+
+.settings-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #7a6030;
+  flex-shrink: 0;
+  width: 100px;
+}
+
+.settings-value {
+  font-size: 1rem;
+  color: #1a1a1a;
+  font-weight: 500;
+  text-align: right;
+}
+
+.settings-coming-soon {
+  font-size: 0.9rem;
+  color: #999;
+  font-style: italic;
+  text-align: center;
+  margin: 0;
+}
+
+/* ── Responsive ───────────────────────────────────────────── */
+@media (max-width: 480px) {
+  .settings-card {
+    padding: 1rem 1.2rem;
+  }
+
+  .settings-field {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+    padding: 0.75rem 0;
+  }
+
+  .settings-value {
+    text-align: left;
+  }
+}
