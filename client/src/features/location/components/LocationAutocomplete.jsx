@@ -74,9 +74,8 @@ function LocationAutocomplete({
         placeholder="Enter location"
         value={query}
         onChange={(e) => {
-
           setQuery(e.target.value);
-
+          onChange(e.target.value);
           setShowDropdown(true);
         }}
       />

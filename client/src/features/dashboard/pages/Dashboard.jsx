@@ -2,7 +2,8 @@ import { useQuery } from "@apollo/client/react";
 import { GET_ME } from "../../auth/graphql/queries";
 import { useNavigate } from "react-router-dom";
 import AvailabilityBox from "../../volunteers/components/AvailabilityBox";
-import VolunteersList from "../../volunteers/components/VolunteersList";
+import RequestForm from "../../requests/components/RequestForm";
+import RequestList from "../../requests/components/RequestList";
 import ProfileMenu from "../../../shared/components/ProfileMenu";
 import "../styles/dashboard.css";
 
@@ -47,9 +48,12 @@ function Dashboard() {
           {user.role?.toUpperCase() === "SEEKER" && (
             <section className="dashboard-section seeker-section">
               <div className="section-header">
-                <h2>Available Volunteers Near You</h2>
+                <h2>Get Help</h2>
+                <p className="section-subtitle">Post a request and a volunteer near you will reach out.</p>
               </div>
-              <VolunteersList />
+              <RequestForm />
+              <h3 className="req-list-section-title">Your Requests</h3>
+              <RequestList />
             </section>
           )}
         </div>
