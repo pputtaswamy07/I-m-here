@@ -35,20 +35,42 @@ export const LOGIN_USER = gql`
 `;
 
 export const MARK_AVAILABLE = gql`
-  mutation MarkAvailable(
-    $tasks: [String]
-    $location: String
-    $phone: String
-    $email: String
-  ) {
+  mutation MarkAvailable($tasks: [String], $location: String) {
+    markAvailable(tasks: $tasks, location: $location) {
+      id
+    }
+  }
+`;
 
-    markAvailable(
-      tasks: $tasks
+export const POST_REQUEST = gql`
+  mutation PostRequest(
+    $title: String!
+    $description: String
+    $category: String
+    $location: String!
+  ) {
+    postRequest(
+      title: $title
+      description: $description
+      category: $category
       location: $location
-      phone: $phone
-      email: $email
     ) {
       id
+      title
+      description
+      category
+      location
+      status
+      createdAt
+    }
+  }
+`;
+
+export const CANCEL_REQUEST = gql`
+  mutation CancelRequest($id: ID!) {
+    cancelRequest(id: $id) {
+      id
+      status
     }
   }
 `;

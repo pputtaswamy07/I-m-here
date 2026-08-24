@@ -1,5 +1,6 @@
 import User from "../models/Users.js";
 import Availability from "../models/Availability.js";
+import HelpRequest from "../models/HelpRequest.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
@@ -12,7 +13,17 @@ const resolvers = {
     me: async (_, __, { user }) => {
       if (!user) return null;
       return await User.findById(user.id);
-    }
+    },
+
+    myRequests: async (_, __, { user }) => {
+      if (!user) throw new Error("Not authenticated");
+      return await HelpRequest.find({ seeker: user.id }).populate("seeker");
+    },
+
+    openRequests: async (_, __, { user }) => {
+      if (!user) throw new Error("Not authenticated");
+      return await HelpRequest.find({ status: "OPEN" }).populate("seeker");
+    },
   },
 
   Mutation: {
@@ -97,8 +108,6 @@ const resolvers = {
 },
 
     markUnavailable: async (_, __, { user }) => {
-       console.log(user);
-       
       if (!user) throw new Error("Not authenticated");
 
       await Availability.updateMany(
@@ -106,8 +115,39 @@ const resolvers = {
         { isActive: false }
       );
       return true;
-    }
-  }
+    },
+
+    postRequest: async (_, { title, description, category, location }, { user }) => {
+      if (!user) throw new Error("Not authenticated");
+
+      const seeker = await User.findById(user.id);
+      if (!seeker || seeker.role !== "SEEKER") {
+        throw new Error("Only seekers can post requests");
+      }
+
+      return await HelpRequest.create({
+        seeker: user.id,
+        title,
+        description,
+        category,
+        location,
+      });
+    },
+
+    cancelRequest: async (_, { id }, { user }) => {
+      if (!user) throw new Error("Not authenticated");
+
+      const request = await HelpRequest.findById(id);
+      if (!request) throw new Error("Request not found");
+      if (String(request.seeker) !== String(user.id)) {
+        throw new Error("Not your request");
+      }
+
+      request.status = "CANCELLED";
+      await request.save();
+      return request;
+    },
+  },
 };
 
 export default resolvers;

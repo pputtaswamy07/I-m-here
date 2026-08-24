@@ -24,8 +24,18 @@ jest.mock('../models/Availability.js', () => ({
   },
 }))
 
+jest.mock('../models/HelpRequest.js', () => ({
+  __esModule: true,
+  default: {
+    find: jest.fn(),
+    findById: jest.fn(),
+    create: jest.fn(),
+  },
+}))
+
 import User from '../models/Users.js'
 import Availability from '../models/Availability.js'
+import HelpRequest from '../models/HelpRequest.js'
 
 const JWT_SECRET = 'test-secret'
 beforeAll(() => { process.env.JWT_SECRET = JWT_SECRET })
@@ -169,5 +179,123 @@ describe('Mutation.markUnavailable', () => {
     const result = await resolvers.Mutation.markUnavailable(null, {}, { user: { id: 'u1' } })
     expect(Availability.updateMany).toHaveBeenCalledWith({ user: 'u1' }, { isActive: false })
     expect(result).toBe(true)
+  })
+})
+
+// ── Query: myRequests ────────────────────────────────────────
+describe('Query.myRequests', () => {
+  it('throws when not authenticated', async () => {
+    await expect(
+      resolvers.Query.myRequests(null, {}, { user: null })
+    ).rejects.toThrow('Not authenticated')
+  })
+
+  it('returns requests belonging to the logged-in seeker', async () => {
+    const fakeRequests = [{ id: 'r1', title: 'Help with groceries' }]
+    const populateMock = jest.fn().mockResolvedValue(fakeRequests)
+    HelpRequest.find.mockReturnValue({ populate: populateMock })
+
+    const result = await resolvers.Query.myRequests(null, {}, { user: { id: 'u1' } })
+    expect(HelpRequest.find).toHaveBeenCalledWith({ seeker: 'u1' })
+    expect(populateMock).toHaveBeenCalledWith('seeker')
+    expect(result).toEqual(fakeRequests)
+  })
+})
+
+// ── Query: openRequests ──────────────────────────────────────
+describe('Query.openRequests', () => {
+  it('throws when not authenticated', async () => {
+    await expect(
+      resolvers.Query.openRequests(null, {}, { user: null })
+    ).rejects.toThrow('Not authenticated')
+  })
+
+  it('returns all open requests', async () => {
+    const fakeRequests = [{ id: 'r2', title: 'Need a ride', status: 'OPEN' }]
+    const populateMock = jest.fn().mockResolvedValue(fakeRequests)
+    HelpRequest.find.mockReturnValue({ populate: populateMock })
+
+    const result = await resolvers.Query.openRequests(null, {}, { user: { id: 'u1' } })
+    expect(HelpRequest.find).toHaveBeenCalledWith({ status: 'OPEN' })
+    expect(populateMock).toHaveBeenCalledWith('seeker')
+    expect(result).toEqual(fakeRequests)
+  })
+})
+
+// ── Mutation: postRequest ────────────────────────────────────
+describe('Mutation.postRequest', () => {
+  const args = { title: 'Help with groceries', description: 'Weekly shop', category: 'GROCERY', location: 'Berlin' }
+
+  it('throws when not authenticated', async () => {
+    await expect(
+      resolvers.Mutation.postRequest(null, args, { user: null })
+    ).rejects.toThrow('Not authenticated')
+  })
+
+  it('throws when the caller is not a seeker', async () => {
+    User.findById.mockResolvedValue({ _id: 'u1', role: 'VOLUNTEER' })
+
+    await expect(
+      resolvers.Mutation.postRequest(null, args, { user: { id: 'u1' } })
+    ).rejects.toThrow('Only seekers can post requests')
+  })
+
+  it('throws when user record is not found', async () => {
+    User.findById.mockResolvedValue(null)
+
+    await expect(
+      resolvers.Mutation.postRequest(null, args, { user: { id: 'ghost' } })
+    ).rejects.toThrow('Only seekers can post requests')
+  })
+
+  it('creates and returns a new help request', async () => {
+    User.findById.mockResolvedValue({ _id: 'u1', role: 'SEEKER' })
+    const fakeRequest = { id: 'r1', seeker: 'u1', ...args }
+    HelpRequest.create.mockResolvedValue(fakeRequest)
+
+    const result = await resolvers.Mutation.postRequest(null, args, { user: { id: 'u1' } })
+    expect(HelpRequest.create).toHaveBeenCalledWith({
+      seeker: 'u1',
+      title: args.title,
+      description: args.description,
+      category: args.category,
+      location: args.location,
+    })
+    expect(result).toEqual(fakeRequest)
+  })
+})
+
+// ── Mutation: cancelRequest ──────────────────────────────────
+describe('Mutation.cancelRequest', () => {
+  it('throws when not authenticated', async () => {
+    await expect(
+      resolvers.Mutation.cancelRequest(null, { id: 'r1' }, { user: null })
+    ).rejects.toThrow('Not authenticated')
+  })
+
+  it('throws when request is not found', async () => {
+    HelpRequest.findById.mockResolvedValue(null)
+
+    await expect(
+      resolvers.Mutation.cancelRequest(null, { id: 'bad-id' }, { user: { id: 'u1' } })
+    ).rejects.toThrow('Request not found')
+  })
+
+  it('throws when the request belongs to a different user', async () => {
+    HelpRequest.findById.mockResolvedValue({ seeker: 'other-user', status: 'OPEN' })
+
+    await expect(
+      resolvers.Mutation.cancelRequest(null, { id: 'r1' }, { user: { id: 'u1' } })
+    ).rejects.toThrow('Not your request')
+  })
+
+  it('sets status to CANCELLED and returns the updated request', async () => {
+    const fakeRequest = { seeker: 'u1', status: 'OPEN', save: jest.fn().mockResolvedValue(true) }
+    HelpRequest.findById.mockResolvedValue(fakeRequest)
+
+    const result = await resolvers.Mutation.cancelRequest(null, { id: 'r1' }, { user: { id: 'u1' } })
+    expect(fakeRequest.status).toBe('CANCELLED')
+    expect(fakeRequest.save).toHaveBeenCalled()
+    expect(result).toBe(fakeRequest)
   })
 })
